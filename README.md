@@ -59,6 +59,17 @@ python setup.py develop
 > Note: If you encounter google/dense_hash_map issue with installing torchsparse, please install sparsehash first
 > via `sudo apt update && sudo apt install libsparsehash-dev`.
 
+
+## Reproducible dependency installation
+
+The reference environment in this repository is Python 3.8 with PyTorch 2.3.1, torchvision 0.18.1, torchaudio 2.3.1 and CUDA 12.1. For a different PyTorch/CUDA environment, please validate the full compatibility tuple before running the demo. In particular, the `mine` branch of the TorchSparse dependency is compiled from source; a build can fail against newer PyTorch C++ headers if the branch does not contain the corresponding `Tensor.scalar_type()` dispatch updates.
+
+Install the framework first and install source-built dependencies only after PyTorch imports successfully. If a source package's isolated build environment cannot import the already-installed framework, use `--no-build-isolation` for that package rather than reinstalling or replacing PyTorch. Keep the exact TorchSparse commit and build log when reproducing an installation issue.
+
+A successful package installation or `pip check` is not a runtime validation. At minimum, verify that `torchsparse.backend.__file__` resolves to a compiled extension outside the source checkout and run a small known-value sparse-convolution test before loading SAM4D.
+
+The official installation instructions target Linux NVIDIA CUDA environments. Other accelerator SDKs may provide platform-specific PyTorch packages and require separate validation; this repository does not claim official support for non-NVIDIA accelerators.
+
 ## Quick Start
 ### Prepare Data
 Download dataset Waymo-4DSeg from here: [modelscope](https://modelscope.cn/datasets/StarsMyDestination/Waymo-4DSeg). You can put the extracted example data from `Waymo-4DSeg/samples.zip` to `./data`.
